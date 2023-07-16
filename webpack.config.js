@@ -15,21 +15,30 @@ const config = {
         filename: '[name].js',
         path: path.resolve(__dirname, 'build'),
         library: {
-            type: 'module',
-        },
+            name: 'kuromoji',
+            type: 'umd',
+          },
+          globalObject: 'this',
+    },
+    optimization: {
+        minimize: false,
     },
     resolve: {
         fallback: { path: require.resolve('path-browserify')},
     },
     plugins: [
-        // Add your plugins here
-        // Learn more about plugins from https://webpack.js.org/configuration/plugins/
     ],
     module: {
         rules: [
             {
-                test: /\.(js|jsx)$/i,
-                loader: 'babel-loader',
+                test: /\.js$/,
+                exclude: /(node_modules)/,
+                use: {
+                  loader: 'babel-loader',
+                  options: {
+                    presets: ['@babel/preset-env']
+                  }
+                }
             },
             {
                 test: /\.(eot|svg|ttf|woff|woff2|png|jpg|gif)$/i,

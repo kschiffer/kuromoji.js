@@ -19,6 +19,7 @@
 
 var zlib = require("zlibjs/bin/gunzip.min.js");
 var DictionaryLoader = require("./DictionaryLoader");
+var Buffer = require('buffer');
 
 /**
  * BrowserDictionaryLoader inherits DictionaryLoader, using jQuery XHR for download

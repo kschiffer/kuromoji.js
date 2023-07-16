@@ -19,7 +19,6 @@
 
 var zlib = require("zlibjs/bin/gunzip.min.js");
 var DictionaryLoader = require("./DictionaryLoader");
-var Buffer = require('buffer');
 
 /**
  * BrowserDictionaryLoader inherits DictionaryLoader, using jQuery XHR for download
@@ -41,10 +40,13 @@ BrowserDictionaryLoader.prototype.loadArrayBuffer = function (url, callback) {
     // Use webpack's magic comments to filter which files are bundled
     import(/* webpackInclude: /\.gz$/ */ `../../dict/${url.split('/').pop()}`)
     .then(fileData => {
-        const buffer = Buffer.from(fileData, 'base64');
-        const decompressed = zlib.gunzipSync(buffer);
-        const typed_array = new Uint8Array(decompressed);
-        callback(null, typed_array.buffer);
+        var binary_string = window.atob(fileData);
+        var len = binary_string.length;
+        var bytes = new Uint8Array(len);
+        for (var i = 0; i < len; i++) {
+            bytes[i] = binary_string.charCodeAt(i);
+        }
+        callback(null, bytes.buffer);
     })
     .catch(err => {
         callback(err);

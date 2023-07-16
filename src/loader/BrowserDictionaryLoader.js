@@ -38,7 +38,7 @@ BrowserDictionaryLoader.prototype = Object.create(DictionaryLoader.prototype);
  */
 BrowserDictionaryLoader.prototype.loadArrayBuffer = function (url, callback) {
     // Use webpack's magic comments to filter which files are bundled
-    import(/* webpackInclude: /\.gz$/ */ `../../dict/${file.split('/').pop()}`)
+    import(/* webpackInclude: /\.gz$/ */ `../../dict/${url.split('/').pop()}`)
     .then(fileData => {
         const buffer = Buffer.from(fileData, 'base64');
         const decompressed = zlib.gunzipSync(buffer);

@@ -17,7 +17,6 @@
 
 "use strict";
 
-var fs = require("fs");
 var node_zlib = require("zlib");
 var DictionaryLoader = require("./DictionaryLoader");
 
@@ -38,19 +37,41 @@ NodeDictionaryLoader.prototype = Object.create(DictionaryLoader.prototype);
  * @param {NodeDictionaryLoader~onLoad} callback Callback function
  */
 NodeDictionaryLoader.prototype.loadArrayBuffer = function (file, callback) {
-    fs.readFile(file, function (err, buffer) {
-        if(err) {
-            return callback(err);
-        }
-        node_zlib.gunzip(buffer, function (err2, decompressed) {
-            if(err2) {
-                return callback(err2);
+    if (typeof process !== 'undefined' && process.versions.node) {
+        // We are in a Node.js environment
+        var fs = require("fs");
+        fs.readFile(file, function (err, buffer) {
+            if (err) {
+                return callback(err);
             }
-            var typed_array = new Uint8Array(decompressed);
-            callback(null, typed_array.buffer);
+            node_zlib.gunzip(buffer, function (err2, decompressed) {
+                if(err2) {
+                    return callback(err2);
+                }
+                var typed_array = new Uint8Array(decompressed);
+                callback(null, typed_array.buffer);
+            });
         });
-    });
+    } else {
+        // We are in a non-Node.js environment
+        try {
+        // Use webpack's magic comments to filter which files are bundled
+        import(/* webpackInclude: /\.gz$/ */ `../../dict/${file.split('/').pop()}`)
+            .then(fileData => {
+                const buffer = Buffer.from(fileData, 'base64');
+                const decompressed = zlib.gunzipSync(buffer);
+                const typed_array = new Uint8Array(decompressed);
+                callback(null, typed_array.buffer);
+            })
+            .catch(err => {
+                callback(err);
+            });
+        } catch (err) {
+            callback(err);
+        }
+    }
 };
+
 
 /**
  * @callback NodeDictionaryLoader~onLoad

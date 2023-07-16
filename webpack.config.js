@@ -8,42 +8,41 @@ const config = {
     entry: {
         kuromoji: './src/kuromoji.js',
     },
-    experiments: {
-        outputModule: true,
-    },
     output: {
         filename: '[name].js',
         path: path.resolve(__dirname, 'build'),
-        library: {
-            name: 'kuromoji',
-            type: 'umd',
-          },
-          globalObject: 'this',
+        libraryTarget: 'commonjs2',
     },
     optimization: {
-        minimize: false,
+      minimize: false,
     },
     resolve: {
-        fallback: { path: require.resolve('path-browserify')},
+        fallback: { 
+            path: require.resolve('path-browserify'),
+            zlib: require.resolve('browserify-zlib'),
+            stream: require.resolve('stream-browserify'),
+            fs: false,
+        },
     },
     plugins: [
+        // Add your plugins here
+        // Learn more about plugins from https://webpack.js.org/configuration/plugins/
     ],
     module: {
         rules: [
             {
-                test: /\.js$/,
-                exclude: /(node_modules)/,
-                use: {
-                  loader: 'babel-loader',
-                  options: {
-                    presets: ['@babel/preset-env']
-                  }
-                }
+                test: /\.(js|jsx)$/i,
+                loader: 'babel-loader',
             },
             {
                 test: /\.(eot|svg|ttf|woff|woff2|png|jpg|gif)$/i,
                 type: 'asset',
             },
+            {
+                test: /\.gz$/,
+                exclude: /node_modules/,
+                use: 'binary-base64-loader',
+              }
 
             // Add your rules for custom modules here
             // Learn more about loaders from https://webpack.js.org/loaders/

@@ -8469,7 +8469,7 @@ BrowserDictionaryLoader.prototype = Object.create(DictionaryLoader.prototype);
  */
 BrowserDictionaryLoader.prototype.loadArrayBuffer = function (url, callback) {
   // Use webpack's magic comments to filter which files are bundled
-  __webpack_require__(957)("./".concat(file.split('/').pop())).then(function (fileData) {
+  __webpack_require__(957)("./".concat(url.split('/').pop())).then(function (fileData) {
     var buffer = Buffer.from(fileData, 'base64');
     var decompressed = zlib.gunzipSync(buffer);
     var typed_array = new Uint8Array(decompressed);

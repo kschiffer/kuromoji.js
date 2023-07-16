@@ -40,12 +40,8 @@ BrowserDictionaryLoader.prototype.loadArrayBuffer = function (url, callback) {
     // Use webpack's magic comments to filter which files are bundled
     import(/* webpackInclude: /\.gz$/ */ `../../dict/${url.split('/').pop()}`)
     .then(fileData => {
-        var binary_string = window.atob(fileData);
-        var len = binary_string.length;
-        var bytes = new Uint8Array(len);
-        for (var i = 0; i < len; i++) {
-            bytes[i] = binary_string.charCodeAt(i);
-        }
+        console.log(fileData)
+        var bytes = new Uint8Array(fileData);
         callback(null, bytes.buffer);
     })
     .catch(err => {

@@ -48,7 +48,7 @@ const config = {
             {
                 test: /\.gz$/,
                 exclude: /node_modules/,
-                use: 'binary-base64-loader',
+                use: 'arraybuffer-loader',
               }
 
             // Add your rules for custom modules here

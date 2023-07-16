@@ -1,6 +1,7 @@
 // Generated using webpack-cli https://github.com/webpack/webpack-cli
 
 const path = require('path');
+const webpack = require('webpack')
 
 const isProduction = process.env.NODE_ENV == 'production';
 
@@ -14,7 +15,10 @@ const config = {
         libraryTarget: 'commonjs2',
     },
     optimization: {
-      minimize: false,
+        minimize: false,
+        splitChunks: {
+          chunks: 'initial'
+        }
     },
     resolve: {
         fallback: { 
@@ -25,6 +29,9 @@ const config = {
         },
     },
     plugins: [
+        new webpack.optimize.LimitChunkCountPlugin({
+            maxChunks: 1
+        })
         // Add your plugins here
         // Learn more about plugins from https://webpack.js.org/configuration/plugins/
     ],

@@ -8,10 +8,15 @@ const config = {
     entry: {
         kuromoji: './src/kuromoji.js',
     },
+    experiments: {
+        outputModule: true,
+    },
     output: {
         filename: '[name].js',
         path: path.resolve(__dirname, 'build'),
-        libraryTarget: 'commonjs2',
+        library: {
+            type: 'module',
+        },
     },
     resolve: {
         fallback: { path: require.resolve('path-browserify')},
